@@ -11,6 +11,7 @@ from maps import maps
 import random
 from utils.mapspawner import MapSpawner
 
+#git commit -a -m "fixed" в Terminal
 
 class App:
     def __init__(self, player_lifes, progress=0):

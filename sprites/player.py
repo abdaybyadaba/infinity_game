@@ -102,3 +102,5 @@ class Player(pygame.sprite.Sprite):
 
     def kill_player(self, sprites_group):
         pygame.sprite.Sprite.remove(self, sprites_group)
+
+
