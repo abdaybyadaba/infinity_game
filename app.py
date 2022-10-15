@@ -25,11 +25,10 @@ class App:
         self.create_game_objects(player_lifes)
 
 
-    def create_game_objects(self,  player_lifes):
+    def create_game_objects(self, player_lifes):
         self.player = Player(player_lifes)
         self.camera = Camera()
-        #print(type(self.C1), type(self.bigBox))
-        self.next_map = self.spawner.spawn_map(0) # [object, object, object]
+        self.next_map = self.spawner.spawn_map(0)# [object, object, object]
         self.all_sprites_group.add((self.player, self.next_map))
         self.object_sprites.add(self.next_map)
 
@@ -88,8 +87,8 @@ class App:
         if not self.player.is_jump:
             if not pygame.sprite.spritecollideany(self.player, self.object_sprites):
                 can_go = True
+                self.player.move_player(0, 0, )
 
-            self.player.move_player(0, 0, )
         else:
             self.player.jump()
 
