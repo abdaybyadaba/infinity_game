@@ -63,6 +63,7 @@ class Player(pygame.sprite.Sprite):
     def stand(self, platform_speed):
         self.direction_idx = 0
         self.rect.x += platform_speed
+        print("all ok")
 
     def fall(self):
         if self.block_vertical == 1:
