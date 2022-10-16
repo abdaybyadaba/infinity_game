@@ -49,7 +49,7 @@ class App:
             self.all_sprites_group.add(self.next_map)
             self.object_sprites.add(self.next_map)
 
-        print(len(self.all_sprites_group))
+        #print(len(self.all_sprites_group))
         self.all_sprites_group.update()
         self.bg.render(self.sc)
         self.all_sprites_group.draw(self.sc)
@@ -85,12 +85,14 @@ class App:
     def do_player_action(self):
 
         if not self.player.is_jump:
-            if not pygame.sprite.spritecollideany(self.player, self.object_sprites):
-                can_go = True
-                self.player.move_player(0, 0, )
+            if not pygame.sprite.spritecollideany(self.player, self.object_sprites): #обновлено
+                #self.player.direction_idx = 2
+                pass
+
+            self.player.move_player(0, 0, self.object_sprites, self.player)
 
         else:
-            self.player.jump()
+            self.player.jump(self.object_sprites, self.player)
 
     def run(self):
 
