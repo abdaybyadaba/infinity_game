@@ -19,6 +19,8 @@ class Player(pygame.sprite.Sprite):
         self.t = DEFAULT_JUMP_H
         self.anim_number = 0
         self.block_vertical = 0  # 0- give permission 1 - not give permission
+        self.block_right = 0
+        self.block_left = 0
 
         self.image = self.frames[DIRECTION_MAP[self.direction_idx]]
         self.rect = self.image.get_rect()
@@ -42,19 +44,21 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = self.rect.y + platform_speed
 
     def jump(self, sprites, player):
-        if self.t < -10:
+        if self.t < -10 or self.block_vertical == 1:
             self.stop_jump()
         else:
-            if self.block_vertical == 0:
-                print(self.block_vertical)
-                self.rect.x += self.direction_idx * self.walk_speed * 2
-                self.rect.y -= self.walk_speed * self.t
+            #if self.block_vertical == 0:
+            print(self.block_vertical)
+            self.rect.x += self.direction_idx * self.walk_speed * 2
+            self.rect.y -= self.walk_speed * self.t
 
             if self.rect.x < 0:
                 self.rect.x = 0
             elif self.rect.x + self.w > WIN_W:
                 self.rect.x = WIN_W - self.w
             self.t -= 1
+
+    # if player not collision with objects and y player < floor y: direction idx = 2
 
     def stop_jump(self):
         self.is_jump = False
@@ -63,7 +67,6 @@ class Player(pygame.sprite.Sprite):
     def stand(self, platform_speed):
         self.direction_idx = 0
         self.rect.x += platform_speed
-        print("all ok")
 
     def fall(self):
         if self.block_vertical == 1:
@@ -91,31 +94,30 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction_idx = 2
 
+    def check_collisions(self, collision_object):
+        if collision_object is not None:
+            if self.rect.bottom > collision_object.rect.centery:
+                if (self.rect.right + self.walk_speed) > collision_object.rect.left and self.rect.centerx < collision_object.rect.centerx:
+                    self.block_right = 1
+                if (self.rect.left - self.walk_speed) < collision_object.rect.right and self.rect.centerx > collision_object.rect.centerx:
+                    self.block_left = 1
+            if self.rect.bottom >= collision_object.rect.top:
+                self.block_vertical = 1
+        else:
+            self.block_left, self.block_right = 0, 0
+            self.block_vertical = 0
+
     def move_player(self, dp_speed_x, dp_speed_y, sprites, player):
         self.move_vertical(dp_speed_y)
         keys = pygame.key.get_pressed()
-        sep1, sep2 = 0, 0
 
-        l = pygame.sprite.spritecollideany(player, sprites)
-        if not type(l) == type(None):
-            if self.rect.bottom > l.rect.centery:
-                if (self.rect.right + dp_speed_x) > l.rect.left and self.rect.centerx < l.rect.centerx:
-                    sep2 = 1
-                if (self.rect.left - dp_speed_x) < l.rect.right and self.rect.centerx > l.rect.centerx:
-                    sep1 = 1
-            if self.rect.bottom >= l.rect.top:
-                self.block_vertical = 1
-        else:
-            sep1, sep2 = 0, 0
-            self.block_vertical = 0
-
-
-
-        if keys[pygame.K_LEFT] and sep1 == 0:
+        block_left, block_right = 0, 0
+        #l = pygame.sprite.spritecollideany(player, sprites)
+        #self.check_collisions(l)
+        if keys[pygame.K_LEFT] and self.block_left == 0:
             self.move_left(dp_speed_x)
-        elif keys[pygame.K_RIGHT] and sep2 == 0:
+        elif keys[pygame.K_RIGHT] and self.block_right == 0:
             self.move_right(dp_speed_x)
-
         elif keys[pygame.K_SPACE]:
             self.is_jump = True
             self.jump(sprites, player)

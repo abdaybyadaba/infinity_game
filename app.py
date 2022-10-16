@@ -82,13 +82,25 @@ class App:
             elif event.type == KEYDOWN and event.key == pygame.K_SPACE:
                 return True
 
+    def check_collisions(self, collision_object):
+        if collision_object is not None:
+            if self.player.rect.bottom > collision_object.rect.centery:
+                if (self.player.rect.right + self.player.walk_speed) > collision_object.rect.left and \
+                        self.player.rect.centerx < collision_object.rect.centerx:
+                    self.player.block_right = 1
+                if (self.player.rect.left - self.player.walk_speed) < collision_object.rect.right and \
+                        self.player.rect.centerx > collision_object.rect.centerx:
+                    self.player.block_left = 1
+            if self.player.rect.bottom >= collision_object.rect.top:
+                self.player.block_vertical = 1
+        else:
+            self.player.block_left, self.player.block_right = 0, 0
+            self.player.block_vertical = 0
+
     def do_player_action(self):
-
+        l = pygame.sprite.spritecollideany(self.player, self.object_sprites)
+        self.check_collisions(l)
         if not self.player.is_jump:
-            if not pygame.sprite.spritecollideany(self.player, self.object_sprites): #обновлено
-                #self.player.direction_idx = 2
-                pass
-
             self.player.move_player(0, 0, self.object_sprites, self.player)
 
         else:
