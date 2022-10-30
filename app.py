@@ -83,6 +83,7 @@ class App:
                 return True
 
     def check_collisions(self, collision_object):
+        self.player.block_left, self.player.block_right, self.player.block_vertical = 0, 0, 0
         if collision_object is not None:
             if self.player.rect.bottom > collision_object.rect.centery:
                 if (self.player.rect.right + self.player.walk_speed) > collision_object.rect.left and \
@@ -92,13 +93,16 @@ class App:
                         self.player.rect.centerx > collision_object.rect.centerx:
                     self.player.block_left = 1
             if self.player.rect.bottom >= collision_object.rect.top:
+                if self.player.rect.bottom < collision_object.rect.centery:
+                    self.player.rect.bottom = collision_object.rect.top+5
                 self.player.block_vertical = 1
-        else:
-            self.player.block_left, self.player.block_right = 0, 0
-            self.player.block_vertical = 0
+
 
     def do_player_action(self):
         l = pygame.sprite.spritecollideany(self.player, self.object_sprites)
+        # if l is None and self.player.rect.y <= 400:
+        #     self.player.direction_idx = 2
+        # print(l)
         self.check_collisions(l)
         if not self.player.is_jump:
             self.player.move_player(0, 0, self.object_sprites, self.player)
