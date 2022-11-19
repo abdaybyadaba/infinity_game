@@ -6,6 +6,7 @@ DEFAULT_JUMP_H = 10
 TEXT_COLOR = (254, 198, 6)
 DIRECTION_MAP = {1: "right", -1: "left", 0: "stand", 2: "fall"}
 TIME_TO_KILL_OBJECT = 500
+GROUND_BEGIN_Y = 404
 
 # path to image:
 
@@ -14,10 +15,8 @@ GR_PATH = "imgs/output-onlinepngtools (4).png"
 COIN_SPRITESHEET_PATH = "imgs/coin_spite.png"
 DIFFERENT_BOXES_SPRITESHEET_PATH = "imgs/boxes sprites`4.png"
 MONEY_PATH = "imgs/coinmodel.png"
+COUNTS_PATH = "imgs/counts"
 
-COUNTS = {0: "imgs/counts/0.png", 1: "imgs/counts/1.png", 2: "imgs/counts/2.png", 3: "imgs/counts/3.png",
-          4: "imgs/counts/4.png", 5: "imgs/counts/5.png", 6: "imgs/counts/6.png", 7: "imgs/counts/7.png",
-          8: "imgs/counts/8.png", 9: "imgs/counts/9.png"}
 
 # cords_and_sizes:
 

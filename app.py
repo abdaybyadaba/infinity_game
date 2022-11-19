@@ -11,6 +11,7 @@ from maps import maps
 import random
 from utils.mapspawner import MapSpawner
 from entities.entities import *
+import os
 #git commit -a -m "fixed" в Terminal
 
 class App:
@@ -44,9 +45,9 @@ class App:
                 self.camera.update(sprite)
 
 
-        if self.USELESS == 25:
-            self.money = random.randint(100_000_000_000_000_000_000, 999_999_999_999_999_999_999)
-            self.USELESS = 0
+        # if self.USELESS == 25:
+           # self.money = random.randint(100_000_000_000_000_000_000, 999_999_999_999_999_999_999)
+            # self.USELESS = 0
 
 
 
@@ -62,7 +63,7 @@ class App:
         self.all_sprites_group.update()
         self.bg.render(self.sc)
         self.all_sprites_group.draw(self.sc)
-        self.money_bar()
+        self.update_money_bar()
 
         pygame.display.update()
 
@@ -72,6 +73,7 @@ class App:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
 
     def show_death_message(self):
         font = pygame.font.SysFont("Arial", 30)
@@ -96,7 +98,7 @@ class App:
         self.player.block_left, self.player.block_right, self.player.block_vertical = 0, 0, 0
         if isinstance(collision_object, Coin):
             collision_object.kill_object()
-            self.money += 7247658569233658956
+            self.money += 1
         if collision_object is not None:
             if self.player.rect.bottom > collision_object.rect.centery:
                 if (self.player.rect.right + self.player.walk_speed) > collision_object.rect.left and \
@@ -110,12 +112,12 @@ class App:
                     self.player.rect.bottom = collision_object.rect.top+5
                 self.player.block_vertical = 1
 
-    def money_bar(self):
-        #self.image = pygame.transform.scale(self.sprite_sheet.get_image(*self.frame_cords), self.scale)
+    def update_money_bar(self):
         self.sc.blit(self.money_rect, [1 + 30, 445])
-        s = str(self.money)
-        for i in range(len(s)):
-            self.sc.blit(pygame.transform.scale(pygame.image.load(COUNTS[int(s[i])]), [40, 40]), [i*30 + 75, 445])
+        for i, u in enumerate(str(self.money)):
+            self.sc.blit(pygame.transform.scale(pygame.image.load(os.path.join(COUNTS_PATH, "{}.png".format(u))), [40, 40]),
+                         [int(i)*30 + 75, 445])
+
 
     def do_player_action(self):
         l = pygame.sprite.spritecollideany(self.player, self.object_sprites)

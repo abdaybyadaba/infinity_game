@@ -47,7 +47,6 @@ class Player(pygame.sprite.Sprite):
         if self.t < -10 or self.block_vertical == 1:
             self.stop_jump()
         else:
-            #if self.block_vertical == 0:
             print(self.block_vertical)
             self.rect.x += self.direction_idx * self.walk_speed * 2
             self.rect.y -= self.walk_speed * self.t
@@ -68,8 +67,9 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += platform_speed
 
     def fall(self):
-        self.direction_idx = 2
         self.rect.y += 5# обновлено
+        if self.rect.bottom > GROUND_BEGIN_Y:
+            self.rect.bottom = GROUND_BEGIN_Y
 
     def update(self):
         direction = DIRECTION_MAP[self.direction_idx]
@@ -88,17 +88,16 @@ class Player(pygame.sprite.Sprite):
 
     def move_player(self, dp_speed_x, dp_speed_y, sprites, player):
         keys = pygame.key.get_pressed()
-        if self.rect.bottom <= 404 and self.block_vertical == 0:
+        if self.rect.bottom < GROUND_BEGIN_Y and self.block_vertical == 0:
             self.fall()
         elif keys[pygame.K_LEFT] and self.block_left == 0:
             self.move_left(dp_speed_x)
         elif keys[pygame.K_RIGHT] and self.block_right == 0:
             self.move_right(dp_speed_x)
-        elif keys[pygame.K_SPACE]:
+        elif keys[pygame.K_SPACE] and (self.block_vertical or self.rect.bottom == GROUND_BEGIN_Y):
             self.is_jump = True
             self.block_vertical = 0
             self.jump(sprites, player)
-
         else:
             self.stand(dp_speed_x)
 
