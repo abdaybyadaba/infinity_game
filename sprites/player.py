@@ -69,7 +69,7 @@ class Player(pygame.sprite.Sprite):
 
     def fall(self):
         self.direction_idx = 2
-        self.rect.y += 5 # обновлено
+        self.rect.y += 5# обновлено
 
     def update(self):
         direction = DIRECTION_MAP[self.direction_idx]
@@ -98,6 +98,7 @@ class Player(pygame.sprite.Sprite):
             self.is_jump = True
             self.block_vertical = 0
             self.jump(sprites, player)
+
         else:
             self.stand(dp_speed_x)
 

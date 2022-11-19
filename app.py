@@ -10,7 +10,7 @@ from sprites.background import Background
 from maps import maps
 import random
 from utils.mapspawner import MapSpawner
-
+from entities.entities import *
 #git commit -a -m "fixed" в Terminal
 
 class App:
@@ -23,7 +23,9 @@ class App:
         self.object_sprites = pygame.sprite.Group()
         self.progress = progress
         self.create_game_objects(player_lifes)
-
+        self.money = 0
+        self.money_rect = pygame.transform.scale(pygame.image.load(MONEY_PATH), [40, 40])
+        self.USELESS = 0
 
     def create_game_objects(self, player_lifes):
         self.player = Player(player_lifes)
@@ -34,11 +36,18 @@ class App:
 
 
     def updates(self):
+        self.USELESS += 1
         if self.camera.activated:
             self.camera.apply_player(self.player)
             self.bg.update(self.camera.dx)
             for sprite in self.all_sprites_group:
                 self.camera.update(sprite)
+
+
+        if self.USELESS == 25:
+            self.money = random.randint(100_000_000_000_000_000_000, 999_999_999_999_999_999_999)
+            self.USELESS = 0
+
 
 
         if not self.camera.activated and self.player.rect.centerx > WIN_W:
@@ -53,6 +62,7 @@ class App:
         self.all_sprites_group.update()
         self.bg.render(self.sc)
         self.all_sprites_group.draw(self.sc)
+        self.money_bar()
 
         pygame.display.update()
 
@@ -84,6 +94,9 @@ class App:
 
     def check_collisions(self, collision_object):
         self.player.block_left, self.player.block_right, self.player.block_vertical = 0, 0, 0
+        if isinstance(collision_object, Coin):
+            collision_object.kill_object()
+            self.money += 7247658569233658956
         if collision_object is not None:
             if self.player.rect.bottom > collision_object.rect.centery:
                 if (self.player.rect.right + self.player.walk_speed) > collision_object.rect.left and \
@@ -97,6 +110,12 @@ class App:
                     self.player.rect.bottom = collision_object.rect.top+5
                 self.player.block_vertical = 1
 
+    def money_bar(self):
+        #self.image = pygame.transform.scale(self.sprite_sheet.get_image(*self.frame_cords), self.scale)
+        self.sc.blit(self.money_rect, [1 + 30, 445])
+        s = str(self.money)
+        for i in range(len(s)):
+            self.sc.blit(pygame.transform.scale(pygame.image.load(COUNTS[int(s[i])]), [40, 40]), [i*30 + 75, 445])
 
     def do_player_action(self):
         l = pygame.sprite.spritecollideany(self.player, self.object_sprites)
@@ -106,7 +125,6 @@ class App:
         self.check_collisions(l)
         if not self.player.is_jump:
             self.player.move_player(0, 0, self.object_sprites, self.player)
-
         else:
             self.player.jump(self.object_sprites, self.player)
 
