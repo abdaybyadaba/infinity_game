@@ -31,9 +31,9 @@ class App:
     def create_game_objects(self, player_lifes):
         self.player = Player(player_lifes)
         self.camera = Camera()
-        self.next_map = self.spawner.spawn_map(0)# [object, object, object]
-        self.all_sprites_group.add((self.player, self.next_map))
-        self.object_sprites.add(self.next_map)
+        self.next_map = self.spawner.spawn_map(0), self.spawner.spawn_map(WIN_W) # [object, object, object]
+        self.all_sprites_group.add((self.player, *self.next_map))
+        self.object_sprites.add(*self.next_map)
 
 
     def updates(self):

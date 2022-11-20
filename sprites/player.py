@@ -49,6 +49,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.rect.x += self.direction_idx * self.walk_speed * 2
             self.rect.y -= self.walk_speed * self.t
+
             if self.rect.bottom > GROUND_BEGIN_Y:
                 self.rect.bottom = GROUND_BEGIN_Y
                 self.stop_jump()
