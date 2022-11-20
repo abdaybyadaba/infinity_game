@@ -28,32 +28,34 @@ class Player(pygame.sprite.Sprite):
         self.game_over = False
         self.n_lifes = life_num
 
-
-    def move_right(self, platform_speed):
+    def move_right(self, platform_speed=0):
         if self.rect.x + self.walk_speed + platform_speed > WIN_W:
             self.rect.x = -self.w
         else:
             self.rect.x = self.rect.x + self.walk_speed + platform_speed
         self.direction_idx = 1
 
-    def move_left(self, platform_speed):
+    def move_left(self, platform_speed=0):
         self.rect.x = max(0, self.rect.x - self.walk_speed + platform_speed)
         self.direction_idx = -1
 
-    def move_vertical(self, platform_speed):
+    def move_vertical(self, platform_speed=0):
         self.rect.y = self.rect.y + platform_speed
 
-    def jump(self, sprites, player):
-        if self.t < -10 or self.block_vertical == 1:
+    def jump(self):
+        self.is_jump = True
+        if self.block_vertical:
             self.stop_jump()
         else:
-            print(self.block_vertical)
             self.rect.x += self.direction_idx * self.walk_speed * 2
             self.rect.y -= self.walk_speed * self.t
+            if self.rect.bottom > GROUND_BEGIN_Y:
+                self.rect.bottom = GROUND_BEGIN_Y
+                self.stop_jump()
+
             if self.rect.x < 0:
                 self.rect.x = 0
-            elif self.rect.x + self.w > WIN_W:
-                self.rect.x = WIN_W - self.w
+
             self.t -= 1
 
     # if player not collision with objects and y player < floor y: direction idx = 2
@@ -62,7 +64,7 @@ class Player(pygame.sprite.Sprite):
         self.is_jump = False
         self.t = 10
 
-    def stand(self, platform_speed):
+    def stand(self, platform_speed=0):
         self.direction_idx = 0
         self.rect.x += platform_speed
 
@@ -86,20 +88,19 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction_idx = 2
 
-    def move_player(self, dp_speed_x, dp_speed_y, sprites, player):
+    def move_player(self):
         keys = pygame.key.get_pressed()
         if self.rect.bottom < GROUND_BEGIN_Y and self.block_vertical == 0:
             self.fall()
         elif keys[pygame.K_LEFT] and self.block_left == 0:
-            self.move_left(dp_speed_x)
+            self.move_left()
         elif keys[pygame.K_RIGHT] and self.block_right == 0:
-            self.move_right(dp_speed_x)
+            self.move_right()
         elif keys[pygame.K_SPACE] and (self.block_vertical or self.rect.bottom == GROUND_BEGIN_Y):
-            self.is_jump = True
             self.block_vertical = 0
-            self.jump(sprites, player)
+            self.jump()
         else:
-            self.stand(dp_speed_x)
+            self.stand()
 
     def kill_player(self, sprites_group):
         pygame.sprite.Sprite.remove(self, sprites_group)

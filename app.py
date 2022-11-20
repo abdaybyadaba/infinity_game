@@ -126,9 +126,9 @@ class App:
         # print(l)
         self.check_collisions(l)
         if not self.player.is_jump:
-            self.player.move_player(0, 0, self.object_sprites, self.player)
+            self.player.move_player()
         else:
-            self.player.jump(self.object_sprites, self.player)
+            self.player.jump()
 
     def run(self):
 
