@@ -5,10 +5,9 @@
 
 
 
-s = 38546385453
+s = 11
 
 
 
 
-for i in range(len(str(s))):
-    print(str(s)[i])
+print(s % 10, s//10, s/10)

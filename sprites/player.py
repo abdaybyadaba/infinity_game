@@ -22,6 +22,9 @@ class Player(pygame.sprite.Sprite):
         self.block_right = 0
         self.block_left = 0
 
+        self.health = 0
+        self.addition_health = 0
+
         self.image = self.frames[DIRECTION_MAP[self.direction_idx]]
         self.rect = self.image.get_rect()
         self.rect = self.rect.move(10, 334)

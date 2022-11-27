@@ -1,5 +1,6 @@
 import sys
 import pygame.sprite
+from pygame_menu import widgets
 import random
 from pygame.locals import *
 from sprites.player import Player
@@ -12,6 +13,7 @@ import random
 from utils.mapspawner import MapSpawner
 from entities.entities import *
 import os
+from pygame_widgets.progressbar import ProgressBar
 #git commit -a -m "fixed" в Terminal
 
 class App:
@@ -24,8 +26,8 @@ class App:
         self.object_sprites = pygame.sprite.Group()
         self.progress = progress
         self.create_game_objects(player_lifes)
-        self.money = 0
-        self.money_rect = pygame.transform.scale(pygame.image.load(MONEY_PATH), [40, 40])
+        self.heart_rect = pygame.transform.scale(pygame.image.load(HEART_PATH), [40, 40])
+        self.gold_heart_rect = pygame.transform.scale(pygame.image.load(GOLD_HEART_PATH), [40, 40])
         self.USELESS = 0
 
     def create_game_objects(self, player_lifes):
@@ -48,7 +50,9 @@ class App:
         # if self.USELESS == 25:
            # self.money = random.randint(100_000_000_000_000_000_000, 999_999_999_999_999_999_999)
             # self.USELESS = 0
-
+        # if self.health > 100:
+        #     self.health -= 10
+        #     self.addition_health += 1
 
 
         if not self.camera.activated and self.player.rect.centerx > WIN_W:
@@ -63,7 +67,8 @@ class App:
         self.all_sprites_group.update()
         self.bg.render(self.sc)
         self.all_sprites_group.draw(self.sc)
-        self.update_money_bar()
+        self.update_health_bar()
+        self.update_lives_bar()
 
         pygame.display.update()
 
@@ -98,7 +103,8 @@ class App:
         self.player.block_left, self.player.block_right, self.player.block_vertical = 0, 0, 0
         if isinstance(collision_object, Coin):
             collision_object.kill_object()
-            self.money += 1
+            self.player.health = self.player.health + 67 if self.player.health + 67 < MAX_XP else MAX_XP
+
         if collision_object is not None:
             if self.player.rect.bottom > collision_object.rect.centery:
                 if (self.player.rect.right + self.player.walk_speed) > collision_object.rect.left and \
@@ -112,11 +118,25 @@ class App:
                     self.player.rect.bottom = collision_object.rect.top+5
                 self.player.block_vertical = 1
 
-    def update_money_bar(self):
-        self.sc.blit(self.money_rect, [1 + 30, 445])
-        for i, u in enumerate(str(self.money)):
+    def update_health_bar(self):
+        # self.progress_bar = widgets.ProgressBar("kookok", pos=(30, 445))
+        # print(type(self.sc))
+        # self.progress_bar.draw(pygame.Surface(self.sc))
+        self.progress_bar = ProgressBar(self.sc, 30, 445, 170, 40, lambda: self.player.health / MAX_XP,
+                                       completedColour="#6e0707", )
+        self.progress_bar.draw()
+        # self.sc.blit(self.heart_rect, [1 + 30, 445])
+        # for i, u in enumerate(str(self.player.health)):
+        #     self.sc.blit(pygame.transform.scale(pygame.image.load(os.path.join(COUNTS_PATH, "{}.png".format(u))), [40, 40]),
+        #                  [int(i)*30 + 75, 445])
+
+    def update_lives_bar(self):
+        self.sc.blit(self.gold_heart_rect, [1 + 230, 445])
+        for i, u in enumerate(str(self.player.addition_health)):
             self.sc.blit(pygame.transform.scale(pygame.image.load(os.path.join(COUNTS_PATH, "{}.png".format(u))), [40, 40]),
-                         [int(i)*30 + 75, 445])
+                         [int(i)*30 + 275, 445])
+
+
 
 
     def do_player_action(self):

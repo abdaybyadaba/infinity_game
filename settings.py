@@ -7,6 +7,7 @@ TEXT_COLOR = (254, 198, 6)
 DIRECTION_MAP = {1: "right", -1: "left", 0: "stand", 2: "fall"}
 TIME_TO_KILL_OBJECT = 500
 GROUND_BEGIN_Y = 404
+MAX_XP = 100
 
 # path to image:
 
@@ -15,6 +16,8 @@ GR_PATH = "imgs/output-onlinepngtools (4).png"
 COIN_SPRITESHEET_PATH = "imgs/coin_spite.png"
 DIFFERENT_BOXES_SPRITESHEET_PATH = "imgs/boxes sprites`4.png"
 MONEY_PATH = "imgs/coinmodel.png"
+HEART_PATH = "imgs/standartheart.png"
+GOLD_HEART_PATH = "imgs/goldheart.png"
 COUNTS_PATH = "imgs/counts"
 
 
