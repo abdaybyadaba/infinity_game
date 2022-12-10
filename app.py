@@ -104,7 +104,12 @@ class App:
         if isinstance(collision_object, Coin):
             collision_object.kill_object()
             self.player.health = self.player.health + 67 if self.player.health + 67 < MAX_XP else MAX_XP
-
+        if isinstance(collision_object, Barrel):
+            collision_object.kill_object()
+            if self.player.health < 100:
+                self.player.health = self.player.health + 67 if self.player.health + 67 < MAX_XP else MAX_XP
+            elif self.player.addition_health < 100:
+                self.player.addition_health = self.player.addition_health + 67 if self.player.addition_health + 67 < MAX_XP else MAX_XP
         if collision_object is not None:
             if self.player.rect.bottom > collision_object.rect.centery:
                 if (self.player.rect.right + self.player.walk_speed) > collision_object.rect.left and \
@@ -122,8 +127,8 @@ class App:
         # self.progress_bar = widgets.ProgressBar("kookok", pos=(30, 445))
         # print(type(self.sc))
         # self.progress_bar.draw(pygame.Surface(self.sc))
-        self.progress_bar = ProgressBar(self.sc, 30, 445, 170, 40, lambda: self.player.health / MAX_XP,
-                                       completedColour="#6e0707", )
+        self.progress_bar = ProgressBar(self.sc, 30, 445, 170, 30, lambda: self.player.health / MAX_XP,
+                                       completedColour="#eb3700", )
         self.progress_bar.draw()
         # self.sc.blit(self.heart_rect, [1 + 30, 445])
         # for i, u in enumerate(str(self.player.health)):
@@ -131,10 +136,13 @@ class App:
         #                  [int(i)*30 + 75, 445])
 
     def update_lives_bar(self):
-        self.sc.blit(self.gold_heart_rect, [1 + 230, 445])
-        for i, u in enumerate(str(self.player.addition_health)):
-            self.sc.blit(pygame.transform.scale(pygame.image.load(os.path.join(COUNTS_PATH, "{}.png".format(u))), [40, 40]),
-                         [int(i)*30 + 275, 445])
+        self.progress_bar = ProgressBar(self.sc, 30 + 170, 445, 85, 30, lambda: self.player.addition_health / MAX_XP,
+                                    completedColour="#cfaf1a",)
+        self.progress_bar.draw()
+        # self.sc.blit(self.gold_heart_rect, [1 + 230, 445])
+        # for i, u in enumerate(str(self.player.addition_health)):
+        #     self.sc.blit(pygame.transform.scale(pygame.image.load(os.path.join(COUNTS_PATH, "{}.png".format(u))), [40, 40]),
+        #                  [int(i)*30 + 275, 445])
 
 
 

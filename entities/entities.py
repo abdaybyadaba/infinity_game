@@ -73,7 +73,7 @@ class BoxWithApples(MobBox):
 
 class Barrel(MobBox):
     def __init__(self, x, y):
-        super().__init__(barrel1, DIFFERENT_BOXES_SPRITESHEET_PATH, 109//1.5, 113//1.5, x, y)
+        super().__init__(Airdrop, MEDKIT_BOX, 64, 64, x, y + 13)
 
 
 

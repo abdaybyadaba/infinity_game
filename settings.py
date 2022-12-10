@@ -19,7 +19,7 @@ MONEY_PATH = "imgs/coinmodel.png"
 HEART_PATH = "imgs/standartheart.png"
 GOLD_HEART_PATH = "imgs/goldheart.png"
 COUNTS_PATH = "imgs/counts"
-
+MEDKIT_BOX = "imgs/texture11.png"
 
 # cords_and_sizes:
 
@@ -31,7 +31,7 @@ Vertical_boxes = [[277, 247, 84, 154]]
 medium_box = [[527, 105, 138, 97]]
 smalle_box = [[708, 147, 87, 54]]
 box_with_apples1 = [[827, 125, 90, 76]]
-barrel1 = [[104, 289, 109, 113]]
+airdrop = [[1, 1, 32, 32]]
 cartoon_box1 = [[414, 317, 125, 84]]
 box_with_cat1 = [[775, 308, 118, 93]]
 
