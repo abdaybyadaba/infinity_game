@@ -9,13 +9,14 @@ class ObjectsFactory:
                                  "middlebox": MiddleBox,
                                  "smallbox": SmallBox,
                                  "boxwithapples": BoxWithApples,
-                                 "barrel": Barrel,
+                                 "barrel": AirdropBox,
                                  "cartoonbox": CartoonBox,
-                                 "coin": Coin
+                                 "coin": Coin,
+                                 "turtle":Turtle
                                 }
 
     def get_object(self, string_object):
-        return self.objects_fabric[string_object]#(напиши сюда координаты)
+        return self.objects_fabric[string_object]#(на пиши сюда координаты)
 
 
 class MapSpawner:
@@ -24,12 +25,15 @@ class MapSpawner:
         self.objects_factory = ObjectsFactory()
 
     def spawn_map(self, bias=0) -> list:
+        print(f"New map with {bias=}")
         objects = []
         for i in random.sample(self.maps, 1):
             for item in i:
                 x = (item["coords"][0]*WIN_W)//WIN_W_MAP + bias
                 y = item['coords'][1]
-                objects.append(self.objects_factory.get_object(item['object_type'])(x, y))# Mob(x,y)
+                if item['object_type'] == 'turtle' and random.randint(0, 1) == 0:
+                    continue
+                objects.append(self.objects_factory.get_object(item['object_type'])(x, y, item['xdev'], item['v'])) # Mob(x,y)
         return objects
 
 

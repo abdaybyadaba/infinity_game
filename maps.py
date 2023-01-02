@@ -1,13 +1,12 @@
-
+from settings import TURTLE_DEVIATION
 maps = [[
     {
         'object_type':"boxwithapples",
         'coords': (312, 346),
         'v': None,
-        'xdev': None,  # objects deviation across axis x
+        'xdev': None,  #  objects deviation across axis x
         'ydev': None,  # objects deviation across axis y
     },
-
     {
         'object_type': "barrel",
         'coords': (396, 323),
@@ -56,6 +55,13 @@ maps = [[
     ],
 
     [
+    {
+        'object_type': "turtle",
+         'coords': (250, 366),
+         'v': 1,
+         'xdev': TURTLE_DEVIATION,  # objects deviation across axis x
+         'ydev': None,  # objects deviation across axis y},
+    },
     {
         'object_type': "bigbox",
         'coords': (720, 314),

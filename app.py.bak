@@ -14,9 +14,7 @@ from utils.mapspawner import MapSpawner
 from entities.entities import *
 import os
 from pygame_widgets.progressbar import ProgressBar
-
-
-# git commit -a -m "fixed" в Terminal
+#git commit -a -m "fixed" в Terminal
 
 class App:
     def __init__(self, player_lifes, progress=0):
@@ -30,37 +28,42 @@ class App:
         self.create_game_objects(player_lifes)
         self.heart_rect = pygame.transform.scale(pygame.image.load(HEART_PATH), [40, 40])
         self.gold_heart_rect = pygame.transform.scale(pygame.image.load(GOLD_HEART_PATH), [40, 40])
-        self.lasttime_conflict = 0
+        self.USELESS = 0
 
     def create_game_objects(self, player_lifes):
         self.player = Player(player_lifes)
         self.camera = Camera()
-        self.next_map = self.spawner.spawn_map(0), self.spawner.spawn_map(WIN_W)  # [object, object, object]
+        self.next_map = self.spawner.spawn_map(0), self.spawner.spawn_map(WIN_W) # [object, object, object]
         self.all_sprites_group.add((self.player, *self.next_map))
         self.object_sprites.add(*self.next_map)
 
+
     def updates(self):
-
+        self.USELESS += 1
         if self.camera.activated:
-            if self.player.direction_idx == -1:
-                self.camera.activated = False
-            else:
-                self.camera.apply_player(self.player)
-                self.bg.update(self.camera.dx)
-                for sprite in self.all_sprites_group:
-                    self.camera.update(sprite)
+            self.camera.apply_player(self.player)
+            self.bg.update(self.camera.dx)
+            for sprite in self.all_sprites_group:
+                self.camera.update(sprite)
 
-        if not self.camera.activated and self.player.rect.centerx > WIN_W // 2:
+
+        # if self.USELESS == 25:
+           # self.money = random.randint(100_000_000_000_000_000_000, 999_999_999_999_999_999_999)
+            # self.USELESS = 0
+        # if self.health > 100:
+        #     self.health -= 10
+        #     self.addition_health += 1
+
+
+        if not self.camera.activated and self.player.rect.centerx > WIN_W:
             self.camera.activated = True
 
-
         if self.bg.offset["ground"] + self.camera.dx >= WIN_W:
-            print(self.bg.offset["ground"])
             self.next_map = self.spawner.spawn_map(WIN_W)
             self.all_sprites_group.add(self.next_map)
             self.object_sprites.add(self.next_map)
 
-        # print(len(self.all_sprites_group))
+        #print(len(self.all_sprites_group))
         self.all_sprites_group.update()
         self.bg.render(self.sc)
         self.all_sprites_group.draw(self.sc)
@@ -69,16 +72,17 @@ class App:
 
         pygame.display.update()
 
+
     def check_event(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
+
     def show_death_message(self):
         font = pygame.font.SysFont("Arial", 30)
-        text_render = font.render("press space to restart game, your score: {} ".format(self.progress), True,
-                                  TEXT_COLOR)
+        text_render = font.render("press space to restart game, your score: {} ".format(self.progress), True, TEXT_COLOR)
         self.sc.fill((0, 0, 0))
         X, Y = (WIN_W - text_render.get_size()[0]) / 2, (WIN_H - text_render.get_size()[1]) / 2
         self.sc.blit(text_render, (X, Y))
@@ -97,27 +101,15 @@ class App:
 
     def check_collisions(self, collision_object):
         self.player.block_left, self.player.block_right, self.player.block_vertical = 0, 0, 0
-
         if isinstance(collision_object, Coin):
             collision_object.kill_object()
-            self.player.health = self.player.health + MEDKIT_XP_STEP if \
-                self.player.health + MEDKIT_XP_STEP < MAX_XP else MAX_XP
-
-        if isinstance(collision_object, Turtle) and (time.time() - self.lasttime_conflict > 4):
-            self.lasttime_conflict = time.time()
-            self.player.health = self.player.health - 50 if self.player.health >= 50 else 0
-            collision_object.death = True
-            #collision_object.death_action()
-
-        if isinstance(collision_object, AirdropBox):
+            self.player.health = self.player.health + 67 if self.player.health + 67 < MAX_XP else MAX_XP
+        if isinstance(collision_object, Barrel):
             collision_object.kill_object()
-            if self.player.health < MAX_XP:
-                self.player.health = self.player.health + ADRENALINE_XP_STEP if \
-                    self.player.health + ADRENALINE_XP_STEP < MAX_XP else MAX_XP
-            elif self.player.addition_health < MAX_ADDITIONAL_XP:
-                self.player.addition_health = self.player.addition_health + ADRENALINE_XP_STEP if \
-                    self.player.addition_health + ADRENALINE_XP_STEP < MAX_XP else MAX_XP
-
+            if self.player.health < 100:
+                self.player.health = self.player.health + 67 if self.player.health + 67 < MAX_XP else MAX_XP
+            elif self.player.addition_health < 100:
+                self.player.addition_health = self.player.addition_health + 67 if self.player.addition_health + 67 < MAX_XP else MAX_XP
         if collision_object is not None:
             if self.player.rect.bottom > collision_object.rect.centery:
                 if (self.player.rect.right + self.player.walk_speed) > collision_object.rect.left and \
@@ -128,7 +120,7 @@ class App:
                     self.player.block_left = 1
             if self.player.rect.bottom >= collision_object.rect.top:
                 if self.player.rect.bottom < collision_object.rect.centery:
-                    self.player.rect.bottom = collision_object.rect.top + 5
+                    self.player.rect.bottom = collision_object.rect.top+5
                 self.player.block_vertical = 1
 
     def update_health_bar(self):
@@ -136,7 +128,7 @@ class App:
         # print(type(self.sc))
         # self.progress_bar.draw(pygame.Surface(self.sc))
         self.progress_bar = ProgressBar(self.sc, 30, 445, 170, 30, lambda: self.player.health / MAX_XP,
-                                        completedColour="#eb3700", )
+                                       completedColour="#eb3700", )
         self.progress_bar.draw()
         # self.sc.blit(self.heart_rect, [1 + 30, 445])
         # for i, u in enumerate(str(self.player.health)):
@@ -144,14 +136,16 @@ class App:
         #                  [int(i)*30 + 75, 445])
 
     def update_lives_bar(self):
-        self.progress_bar = ProgressBar(self.sc, 30 + 170, 445, 85, 30,
-                                        lambda: self.player.addition_health / MAX_ADDITIONAL_XP,
-                                        completedColour="#cfaf1a", )
+        self.progress_bar = ProgressBar(self.sc, 30 + 170, 445, 85, 30, lambda: self.player.addition_health / MAX_XP,
+                                    completedColour="#cfaf1a",)
         self.progress_bar.draw()
         # self.sc.blit(self.gold_heart_rect, [1 + 230, 445])
         # for i, u in enumerate(str(self.player.addition_health)):
         #     self.sc.blit(pygame.transform.scale(pygame.image.load(os.path.join(COUNTS_PATH, "{}.png".format(u))), [40, 40]),
         #                  [int(i)*30 + 275, 445])
+
+
+
 
     def do_player_action(self):
         l = pygame.sprite.spritecollideany(self.player, self.object_sprites)
@@ -169,10 +163,17 @@ class App:
         while True:
             self.check_event()
             self.clock.tick(FPS)
-            # self.bg.
+            #self.bg.
             self.do_player_action()
 
             # if  == 0:
             #     return True
             # print(0)
             self.updates()
+
+
+
+
+
+
+
