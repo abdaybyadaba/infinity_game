@@ -35,6 +35,7 @@ class Coin(Mob):
         self.rect = self.rect.move(x, y)
 
 
+
 class MobBox(Mob):
     def __init__(self, coords, path_to_sprite, scale_width, scale_height, x, y):
         super().__init__(coords, path_to_sprite, scale_width, scale_height)
