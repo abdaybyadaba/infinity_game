@@ -2,8 +2,6 @@ import sys
 import pygame
 from app import App
 
-
-
 pygame.init()
 max_player_lifes = 5
 score = 0

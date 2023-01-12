@@ -8,13 +8,12 @@ maps = [[
         'ydev': None,  # objects deviation across axis y
     },
     {
-        'object_type': "barrel",
-        'coords': (396, 323),
-        'v': None,
-        'xdev': None,  # objects deviation across axis x
+        'object_type': "turtle",
+        'coords': (336, 546),
+        'v': 1,
+        'xdev': TURTLE_DEVIATION,  # objects deviation across axis x
         'ydev': None,  # objects deviation across axis y
     },
-
     {
         'object_type': "bigbox",
         'coords': (863, 314),
@@ -22,7 +21,6 @@ maps = [[
         'xdev': None,  # objects deviation across axis x
         'ydev': None,  # objects deviation across axis y
     },
-
     {
         'object_type': "coin",
         'coords': (1005, 265),
@@ -51,7 +49,6 @@ maps = [[
         'xdev': None,  # objects deviation across axis x
         'ydev': None,  # objects deviation across axis y
     },
-
     ],
 
     [
@@ -69,7 +66,6 @@ maps = [[
         'xdev': None,  # objects deviation across axis x
         'ydev': None,  # objects deviation across axis y
     },
-
     {
         'object_type': "3verticalboxes",
         'coords': (901, 295),
@@ -77,7 +73,6 @@ maps = [[
         'xdev': None,  # objects deviation across axis x
         'ydev': None,  # objects deviation across axis y
     },
-
     {
         'object_type': "smallbox",
         'coords': (1052, 360),
@@ -85,7 +80,6 @@ maps = [[
         'xdev': None,  # objects deviation across axis x
         'ydev': None,  # objects deviation across axis y
     },
-
     {
         'object_type': "3verticalboxes",
         'coords': (1201, 295),
@@ -93,13 +87,12 @@ maps = [[
         'xdev': None,  # objects deviation across axis x
         'ydev': None,  # objects deviation across axis y
     },
-
     ],
 
     [
     {
-        'object_type': "middlebox",
-        'coords': (500, 338),
+        'object_type': "cannon",
+        'coords': (560, 345),
         'v': None,
         'xdev': None,  # objects deviation across axis x
         'ydev': None,  # objects deviation across axis y

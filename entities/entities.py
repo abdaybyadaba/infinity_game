@@ -1,9 +1,11 @@
+import random
+
 import pygame.sprite
 import pygame
 from settings import *
 from utils.spritesheet import SpriteSheet
 # wewe
-
+# fe
 import time
 
 class Mob(pygame.sprite.Sprite):
@@ -55,20 +57,21 @@ class Turtle(Mob):
             self.kill_object()
 
     def update(self):
-        if self.death == False:
-            if self.direction == 1:
-                self.frame_cords = self.coords[3:][self.anim_number // 10]
-            elif self.direction == -1:
-                self.frame_cords = self.coords[0:3][self.anim_number // 10]
-
-            self.rect.x += TURTLE_WALK_SPEED * self.direction
-            self.way += TURTLE_WALK_SPEED
-
-            if self.way >= self.xdev:
-                self.direction = -1 * (self.direction)
-                self.way = 0
-        elif self.death == True:
+        if self.death:
             self.death_action()
+            return None
+
+        if self.direction == 1:
+            self.frame_cords = self.coords[3:][self.anim_number // 10]
+        elif self.direction == -1:
+            self.frame_cords = self.coords[0:3][self.anim_number // 10]
+
+        self.rect.x += TURTLE_WALK_SPEED * self.direction
+        self.way += TURTLE_WALK_SPEED
+
+        if self.way >= self.xdev:
+            self.direction = -1 * (self.direction)
+            self.way = 0
 
         self.image = pygame.transform.scale(self.sprite_sheet.get_image(*self.frame_cords), self.scale)
         self.anim_number = 0 if (self.anim_number + 1) == len(self.coords)*5 else self.anim_number + 1
@@ -83,6 +86,31 @@ class MobBox(Mob):
 
     def update(self):
         self.check_destroy_object()
+
+class Bullet(MobBox):
+    def __init__(self, x, y, *args):
+        super().__init__(bullet, BULLET_PATH, 16, 16, x, y)
+        self.speed = random.randint(11, 22)
+        self.create_time = time.time()
+
+    def update(self):
+        self.rect.x -= self.speed
+        self.rect.y += CRAVITY_CONSTANT*((time.time() - self.create_time)**2)//2
+        self.check_destroy_object()
+
+
+class Cannon(MobBox):
+    def __init__(self, x, y, *args):
+        super().__init__(cannon, CANNON_PATH, 54//1.2, 64//1.2, x, y)
+        self.last_shot = 0
+        self.delay = SHOTS_TIME_DELAY
+
+    def call_shot(self):
+        current_time = time.time()
+        if current_time - self.last_shot > self.delay:
+            self.last_shot = current_time
+            return Bullet(self.rect.centerx, self.rect.centery)
+
 
 class Box(MobBox):
     def __init__(self, x, y, *args):

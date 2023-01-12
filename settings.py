@@ -1,4 +1,5 @@
 # different
+#df
 WIN_W, WIN_H = 1000, 500
 WIN_W_MAP = 1800
 FPS = 60
@@ -13,6 +14,8 @@ MEDKIT_XP_STEP = 60
 ADRENALINE_XP_STEP = 25
 TURTLE_WALK_SPEED = 3
 TURTLE_DEVIATION = 200
+SHOTS_TIME_DELAY = 1
+CRAVITY_CONSTANT = 9.8
 # path to image :
 
 TURTLE_SPRITESHEET_PATH = "imgs/turtle_sprite.png"
@@ -25,8 +28,8 @@ HEART_PATH = "imgs/standartheart.png"
 GOLD_HEART_PATH = "imgs/goldheart.png"
 COUNTS_PATH = "imgs/counts"
 MEDKIT_BOX = "imgs/texture11.png"
-
-
+CANNON_PATH = "imgs/Cannon_sprite.png"
+BULLET_PATH = "imgs/bullet.png"
 # cords_and_sizes:
 
 TURTLE_COORDS_AND_SIZES = [[146, 70, 45, 26], [196, 70, 45, 26], [245, 70, 45, 26],
@@ -39,8 +42,11 @@ medium_box = [[527, 105, 138, 97]]
 smalle_box = [[708, 147, 87, 54]]
 box_with_apples1 = [[827, 125, 90, 76]]
 airdrop = [[1, 1, 32, 32]]
+cannon = [[1, 1, 54, 64]]
+bullet = [[1, 1, 16, 16]]
 cartoon_box1 = [[414, 317, 125, 84]]
 box_with_cat1 = [[775, 308, 118, 93]]
+
 
 
 
