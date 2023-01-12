@@ -26,6 +26,7 @@ class App:
         self.clock = pygame.time.Clock()
         self.all_sprites_group = pygame.sprite.Group()
         self.object_sprites = pygame.sprite.Group()
+
         self.progress = progress
         self.create_game_objects(player_lifes)
         self.heart_rect = pygame.transform.scale(pygame.image.load(HEART_PATH), [40, 40])
@@ -95,41 +96,42 @@ class App:
             elif event.type == KEYDOWN and event.key == pygame.K_SPACE:
                 return True
 
-    def check_collisions(self, collision_object):
+    def check_collisions(self, collision_objects):
         self.player.block_left, self.player.block_right, self.player.block_vertical = 0, 0, 0
 
-        if isinstance(collision_object, Coin):
-            collision_object.kill_object()
-            self.player.health = self.player.health + MEDKIT_XP_STEP if \
-                self.player.health + MEDKIT_XP_STEP < MAX_XP else MAX_XP
+        for obj in collision_objects:
+            if isinstance(obj, Coin):
+                obj.kill_object()
+                self.player.health = self.player.health + MEDKIT_XP_STEP if \
+                    self.player.health + MEDKIT_XP_STEP < MAX_XP else MAX_XP
 
-        if isinstance(collision_object, Turtle) and (time.time() - self.lasttime_conflict > 4):
-            self.lasttime_conflict = time.time()
-            self.player.health = self.player.health - 50 if self.player.health >= 50 else 0
-            collision_object.death = True
-            #collision_object.death_action()
+            if isinstance(obj, Turtle) and (time.time() - self.lasttime_conflict > 4):
+                self.lasttime_conflict = time.time()
+                self.player.health = self.player.health - 50 if self.player.health >= 50 else 0
+                obj.death = True
+                #collision_object.death_action()
 
-        if isinstance(collision_object, AirdropBox):
-            collision_object.kill_object()
-            if self.player.health < MAX_XP:
-                self.player.health = self.player.health + ADRENALINE_XP_STEP if \
-                    self.player.health + ADRENALINE_XP_STEP < MAX_XP else MAX_XP
-            elif self.player.addition_health < MAX_ADDITIONAL_XP:
-                self.player.addition_health = self.player.addition_health + ADRENALINE_XP_STEP if \
-                    self.player.addition_health + ADRENALINE_XP_STEP < MAX_XP else MAX_XP
+            if isinstance(obj, AirdropBox):
+                obj.kill_object()
+                if self.player.health < MAX_XP:
+                    self.player.health = self.player.health + ADRENALINE_XP_STEP if \
+                        self.player.health + ADRENALINE_XP_STEP < MAX_XP else MAX_XP
+                elif self.player.addition_health < MAX_ADDITIONAL_XP:
+                    self.player.addition_health = self.player.addition_health + ADRENALINE_XP_STEP if \
+                        self.player.addition_health + ADRENALINE_XP_STEP < MAX_XP else MAX_XP
 
-        if collision_object is not None:
-            if self.player.rect.bottom > collision_object.rect.centery:
-                if (self.player.rect.right + self.player.walk_speed) > collision_object.rect.left and \
-                        self.player.rect.centerx < collision_object.rect.centerx:
-                    self.player.block_right = 1
-                if (self.player.rect.left - self.player.walk_speed) < collision_object.rect.right and \
-                        self.player.rect.centerx > collision_object.rect.centerx:
-                    self.player.block_left = 1
-            if self.player.rect.bottom >= collision_object.rect.top:
-                if self.player.rect.bottom < collision_object.rect.centery:
-                    self.player.rect.bottom = collision_object.rect.top + 5
-                self.player.block_vertical = 1
+            if isinstance(obj, MobBox):
+                if self.player.rect.bottom > obj.rect.centery:
+                    if (self.player.rect.right + self.player.walk_speed) > obj.rect.left and \
+                            self.player.rect.centerx < obj.rect.centerx:
+                        self.player.block_right = 1
+                    if (self.player.rect.left - self.player.walk_speed) < obj.rect.right and \
+                            self.player.rect.centerx > obj.rect.centerx:
+                        self.player.block_left = 1
+                if self.player.rect.bottom >= obj.rect.top:
+                    if self.player.rect.bottom < obj.rect.centery:
+                        self.player.rect.bottom = obj.rect.top + 5
+                    self.player.block_vertical = 1
 
     def update_health_bar(self):
         # self.progress_bar = widgets.ProgressBar("kookok", pos=(30, 445))
@@ -154,10 +156,12 @@ class App:
         #                  [int(i)*30 + 275, 445])
 
     def do_player_action(self):
-        l = pygame.sprite.spritecollideany(self.player, self.object_sprites)
+        #l = pygame.sprite.spritecollideany(self.player, self.object_sprites)
+        l = pygame.sprite.spritecollide(self.player, self.object_sprites, False, collided=pygame.sprite.collide_mask)
         # if l is None and self.player.rect.y <= 400:
         #     self.player.direction_idx = 2
         # print(l)
+        print(l)
         self.check_collisions(l)
         if not self.player.is_jump:
             self.player.move_player()

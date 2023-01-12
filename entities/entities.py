@@ -55,20 +55,21 @@ class Turtle(Mob):
             self.kill_object()
 
     def update(self):
-        if self.death == False:
-            if self.direction == 1:
-                self.frame_cords = self.coords[3:][self.anim_number // 10]
-            elif self.direction == -1:
-                self.frame_cords = self.coords[0:3][self.anim_number // 10]
-
-            self.rect.x += TURTLE_WALK_SPEED * self.direction
-            self.way += TURTLE_WALK_SPEED
-
-            if self.way >= self.xdev:
-                self.direction = -1 * (self.direction)
-                self.way = 0
-        elif self.death == True:
+        if self.death:
             self.death_action()
+            return None
+
+        if self.direction == 1:
+            self.frame_cords = self.coords[3:][self.anim_number // 10]
+        elif self.direction == -1:
+            self.frame_cords = self.coords[0:3][self.anim_number // 10]
+
+        self.rect.x += TURTLE_WALK_SPEED * self.direction
+        self.way += TURTLE_WALK_SPEED
+
+        if self.way >= self.xdev:
+            self.direction = -1 * (self.direction)
+            self.way = 0
 
         self.image = pygame.transform.scale(self.sprite_sheet.get_image(*self.frame_cords), self.scale)
         self.anim_number = 0 if (self.anim_number + 1) == len(self.coords)*5 else self.anim_number + 1
@@ -83,6 +84,33 @@ class MobBox(Mob):
 
     def update(self):
         self.check_destroy_object()
+
+class Bullet(Mob):
+    def __init__(self, x, y, *args):
+        super().__init__(bullet, BULLET_PATH, 16, 16, x, y)
+
+    def update(self):
+        self.rect.x -= 6
+        self.check_destroy_object()
+
+
+class Cannon(MobBox):
+    def __init__(self, x, y, *args):
+        super().__init__(cannon, CANNON_PATH, 54//1.2, 64//1.2, x, y)
+        # self.lasttime_shot = 0
+        # self.cannon_balls = pygame.sprite.Group()
+
+    # def shot(self):
+    #     self.cannon_balls.add(Bullet(self.rect.centerx, self.rect.centery))
+
+    # def update(self):
+    #     if time.time() - self.lasttime_shot > 2:
+    #         self.lasttime_shot = time.time()
+    #         self.shot()
+    #     self.check_destroy_object()
+    #     self.cannon_balls.update()
+
+
 
 class Box(MobBox):
     def __init__(self, x, y, *args):
