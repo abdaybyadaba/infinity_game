@@ -25,10 +25,11 @@ class App:
         self.spawner = MapSpawner(maps)
         self.sc = pygame.display.set_mode((WIN_W, WIN_H))
         self.clock = pygame.time.Clock()
-        self.all_sprites_group = pygame.sprite.Group()
+        #self.all_sprites_group = pygame.sprite.Group()
         self.object_sprites = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
         self.cannons = pygame.sprite.Group()
+        self.player_group = pygame.sprite.Group()
         self.progress = progress
         self.create_game_objects(player_lifes)
         self.heart_rect = pygame.transform.scale(pygame.image.load(HEART_PATH), [40, 40])
@@ -37,7 +38,8 @@ class App:
 
     def create_game_objects(self, player_lifes):
         self.player = Player(player_lifes)
-        self.all_sprites_group.add(self.player)
+        self.player_group.add(self.player)
+        #self.all_sprites_group.add(self.player)
         self.camera = Camera()
         for plane in self.spawner.spawn_map(0), self.spawner.spawn_map(WIN_W):
             self.parse_map(plane)
@@ -45,7 +47,7 @@ class App:
     def parse_map(self, map_objects: dict):
         if "cannon" in map_objects:
             self.cannons.add(map_objects["cannon"])
-        self.all_sprites_group.add(list(map_objects.values()))
+        #self.all_sprites_group.add(list(map_objects.values()))
         self.object_sprites.add(list(map_objects.values()))
 
     def updates(self):
@@ -56,7 +58,7 @@ class App:
             else:
                 self.camera.apply_player(self.player)
                 self.bg.update(self.camera.dx)
-                for sprite in self.all_sprites_group:
+                for sprite in [*list(self.object_sprites.sprites()), self.player, *list(self.bullets.sprites())]:
                     self.camera.update(sprite)
 
         if not self.camera.activated and self.player.rect.centerx > WIN_W // 2:
@@ -71,12 +73,31 @@ class App:
             bullet = obj.call_shot()
             if bullet:
                 self.bullets.add(bullet)
-                self.all_sprites_group.add(bullet)
+                #self.all_sprites_group.add(bullet)
+
+        for bullet in self.bullets:
+            for obj in [self.player_group, self.object_sprites]:
+                bullet_collisions = pygame.sprite.spritecollide(bullet, obj, False, collided=pygame.sprite.collide_mask)
+
+                if bullet_collisions and self.player_group in bullet_collisions[0].groups():
+                    if not bullet.lasttime_conflict:
+                        bullet.kill()
+                        self.player.health = self.player.health - 5 if self.player.health >= 50 else 0
+
+                if (bullet_collisions and not self.cannons in bullet_collisions[0].groups())\
+                        or bullet.rect.y > GROUND_BEGIN_Y - 6:
+                    if not bullet.lasttime_conflict:
+                        bullet.kill()
+                        self.player.health = self.player.health - 5 if self.player.health >= 50 else 0
 
         # print(len(self.all_sprites_group))
-        self.all_sprites_group.update()
+        self.object_sprites.update()
+        self.player.update()
+        self.bullets.update()
         self.bg.render(self.sc)
-        self.all_sprites_group.draw(self.sc)
+        self.object_sprites.draw(self.sc)
+        self.player_group.draw(self.sc)
+        self.bullets.draw(self.sc)
         self.update_health_bar()
         self.update_lives_bar()
 
@@ -123,6 +144,9 @@ class App:
                 obj.death = True
                 #collision_object.death_action()
 
+            if isinstance(obj, Bullet):
+                print("sdsd")
+
             if isinstance(obj, AirdropBox):
                 obj.kill_object()
                 if self.player.health < MAX_XP:
@@ -144,6 +168,8 @@ class App:
                     if self.player.rect.bottom < obj.rect.centery:
                         self.player.rect.bottom = obj.rect.top + 5
                     self.player.block_vertical = 1
+
+
 
     def update_health_bar(self):
         # self.progress_bar = widgets.ProgressBar("kookok", pos=(30, 445))

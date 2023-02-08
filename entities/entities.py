@@ -90,13 +90,32 @@ class MobBox(Mob):
 class Bullet(MobBox):
     def __init__(self, x, y, *args):
         super().__init__(bullet, BULLET_PATH, 16, 16, x, y)
-        self.speed = random.randint(11, 22)
+        self.speed = random.randint(11, 15)
         self.create_time = time.time()
+        self.lasttime_conflict = 0
 
     def update(self):
-        self.rect.x -= self.speed
-        self.rect.y += CRAVITY_CONSTANT*((time.time() - self.create_time)**2)//2
-        self.check_destroy_object()
+        if not self.lasttime_conflict:
+            self.rect.x -= self.speed
+            self.rect.y += CRAVITY_CONSTANT*((time.time() - self.create_time)**2)//2
+            self.check_destroy_object()
+        print(time.time(), self.lasttime_conflict, self.lasttime_conflict)
+        if (time.time() - self.lasttime_conflict) > 0.2 and self.lasttime_conflict:
+            pygame.sprite.Sprite.kill(self)
+
+    def kill(self):
+        self.lasttime_conflict = time.time()
+        self.image = pygame.transform.scale(pygame.image.load(EXPLOSION_PATH), [70, 70])
+        self.rect.x -= 40
+        self.rect.y -= 40
+
+
+
+
+
+
+
+
 
 
 class Cannon(MobBox):

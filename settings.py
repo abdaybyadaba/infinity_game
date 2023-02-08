@@ -14,7 +14,7 @@ MEDKIT_XP_STEP = 60
 ADRENALINE_XP_STEP = 25
 TURTLE_WALK_SPEED = 3
 TURTLE_DEVIATION = 200
-SHOTS_TIME_DELAY = 1
+SHOTS_TIME_DELAY = 4
 CRAVITY_CONSTANT = 9.8
 # path to image :
 
@@ -30,6 +30,7 @@ COUNTS_PATH = "imgs/counts"
 MEDKIT_BOX = "imgs/texture11.png"
 CANNON_PATH = "imgs/Cannon_sprite.png"
 BULLET_PATH = "imgs/bullet.png"
+EXPLOSION_PATH = "imgs/explosion1.png"
 # cords_and_sizes:
 
 TURTLE_COORDS_AND_SIZES = [[146, 70, 45, 26], [196, 70, 45, 26], [245, 70, 45, 26],
