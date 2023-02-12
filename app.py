@@ -78,17 +78,14 @@ class App:
         for bullet in self.bullets:
             for obj in [self.player_group, self.object_sprites]:
                 bullet_collisions = pygame.sprite.spritecollide(bullet, obj, False, collided=pygame.sprite.collide_mask)
-
-                if bullet_collisions and self.player_group in bullet_collisions[0].groups():
+                if bullet.rect.y > GROUND_BEGIN_Y - 6:
+                    bullet.kill()
+                if bullet_collisions:
                     if not bullet.lasttime_conflict:
-                        bullet.kill()
-                        self.player.health = self.player.health - 5 if self.player.health >= 50 else 0
-
-                if (bullet_collisions and not self.cannons in bullet_collisions[0].groups())\
-                        or bullet.rect.y > GROUND_BEGIN_Y - 6:
-                    if not bullet.lasttime_conflict:
-                        bullet.kill()
-                        self.player.health = self.player.health - 5 if self.player.health >= 50 else 0
+                        if not self.cannons in bullet_collisions[0].groups():
+                            if self.player_group in bullet_collisions[0].groups():
+                                self.player.health = self.player.health - 5 if self.player.health >= 50 else 0
+                            bullet.kill()
 
         # print(len(self.all_sprites_group))
         self.object_sprites.update()

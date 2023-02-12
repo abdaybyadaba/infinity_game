@@ -99,15 +99,16 @@ class Bullet(MobBox):
             self.rect.x -= self.speed
             self.rect.y += CRAVITY_CONSTANT*((time.time() - self.create_time)**2)//2
             self.check_destroy_object()
-        print(time.time(), self.lasttime_conflict, self.lasttime_conflict)
-        if (time.time() - self.lasttime_conflict) > 0.2 and self.lasttime_conflict:
-            pygame.sprite.Sprite.kill(self)
+        else:
+            if (time.time() - self.lasttime_conflict) > 0.2:
+                pygame.sprite.Sprite.kill(self)
 
     def kill(self):
         self.lasttime_conflict = time.time()
         self.image = pygame.transform.scale(pygame.image.load(EXPLOSION_PATH), [70, 70])
         self.rect.x -= 40
         self.rect.y -= 40
+
 
 
 
